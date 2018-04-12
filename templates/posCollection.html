@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connectavo | PoS</title>
+
+<div style="text-align: center">
+    <h1>PoS Count Collection</h1>
+</div>
+
+</head>
+<body>
+
+<div style="float:left; width:48%; margin-right:10px;">
+    <h2> Nouns: </h2>
+
+    {% for key,val in nounCount.items() %}
+    <h3> Total Nouns in Book {{key}}: {{ nounCount[key] }}</h3>
+    {% endfor %}
+
+    {% for key,val in nouns.items() %}
+      <h3> Book {{key}} </h3>
+    {% for word,count in val.items() %}
+        {{ word }} ,
+        {{ count }} |
+    {% endfor %}
+
+    {% endfor %}
+</div>
+
+<div style="float:left; width:50%;margin-left:10px;">
+    <h2> Verbs: </h2>
+
+    {% for key,val in verbCount.items() %}
+    <h3> Total Verbs in Book {{key}}: {{ verbCount[key] }}</h3>
+    {% endfor %}
+
+    {% for key,val in verbs.items() %}
+    <h3> Book {{key}} </h3>
+    {% for word,count in val.items() %}
+        {{ word }} ,
+        {{ count }} |
+    {% endfor %}
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

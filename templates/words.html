@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connectavo | Words</title>
+
+<div style="text-align: center">
+    {% if book == "all" %}
+        <h1>Combined Word Count of All Books</h1>
+    {% else %}
+        <h1>Word Count of Book {{book}}</h1>
+    {%endif%}
+</div>
+
+</head>
+<body>
+{% for key,value in words.items() %}
+    {{ key }} ,
+    {{ value }} |
+{% endfor %}
+</body>
+</html>

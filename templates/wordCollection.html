@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connectavo | Words</title>
+
+<div style="text-align: center">
+    <h1>Word Count Collection</h1>
+</div>
+
+</head>
+<body>
+{% for key,val in collection.items() %}
+  <h3> Book {{key}} </h3>
+{% for word,count in val.items() %}
+    {{ word }} ,
+    {{ count }} |
+{% endfor %}
+
+{% endfor %}
+</body>
+</html>

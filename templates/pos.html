@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Connectavo | Words</title>
+
+<div style="text-align: center">
+    {% if book == "all" %}
+        <h1>Combined PoS Count of All Books</h1>
+    {% else %}
+        <h1>PoS Count of Book {{book}}</h1>
+    {%endif%}
+</div>
+
+</head>
+<body>
+
+<div style="float:left; width:48%; margin-right:10px;">
+<h3> Total Nouns: {{ nounCount }}</h3>
+<h3> Nouns: </h3>
+{% for key,value in nouns.items() %}
+    {{ key }} ,
+    {{ value }} |
+{% endfor %}
+</div>
+<div style="float:left; width:50%;margin-left:10px;">
+<h3> Total Verbs: {{ verbCount }}</h3>
+<h3> Verbs: </h3>
+{% for key,value in verbs.items() %}
+    {{ key }} ,
+    {{ value }} |
+{% endfor %}
+</div>
+
+</body>
+</html>
