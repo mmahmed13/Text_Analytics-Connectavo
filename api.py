@@ -1,8 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from pymongo import MongoClient
 from collections import Counter
 import json
-# import main
+import main
 from bson import Binary, Code
 from bson.json_util import dumps
 
@@ -15,6 +15,14 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+
+@app.route("/sentenceDifference", methods=['GET'])
+def sentenceDifference():
+    book = request.args.get("book")
+    sentence =request.args.get("sentence")
+    most_similar, least_similar = main.sentenceDifference(book, sentence)
+    print (most_similar, "\n", least_similar)
+    return render_template ("sentenceDifference.html", book=book[0], sentence=sentence, most=most_similar, least=least_similar)
 
 @app.route("/words")
 @app.route("/words/")

@@ -161,8 +161,3 @@ def sentenceDifference(book, sentence):
     return sentences[similar_index], sentences[dissimilar_index]
 
 
-input = "I was encouraged to give reception to the English serial issue"
-most, least = sentenceDifference('3-Science', input)
-
-print (most)
-print (least)

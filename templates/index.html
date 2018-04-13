@@ -6,5 +6,18 @@
 </head>
 <body>
 <h1> hello connectavo</h1>
+
+<form action="{{url_for('sentenceDifference')}}" >
+  Enter a Sentence:
+    <input type="text" name="sentence" required > <br>
+    Choose a Book:
+  <select name="book">
+      <option value="1-Ulysses">Book 1</option>
+      <option value="2-Leonardo">Book 2</option>
+      <option value="3-Science">Book 3</option>
+  </select> <br>
+  <input type="submit" value="Submit">
+</form>
+
 </body>
 </html>
