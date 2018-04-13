@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connectavo | Sentence</title>
+    <div style="text-align: center">
+    <h1>Sentence Similarity in Book {{book}} </h1>
+    </div>
+
+</head>
+<body>
+
+<div style="float:left; width:48%; margin-right:10px;">
+<h2> 10 Most Similar Sentences: </h2>
+    {% for item in similar %}
+        <h3></h3>
+    {% endfor %}
+
+    <h3> Nouns: </h3>
+{% for key,value in nouns.items() %}
+    {{ key }} ,
+    {{ value }} |
+{% endfor %}
+</div>
+<div style="float:left; width:50%;margin-left:10px;">
+<h3> Total Verbs: {{ verbCount }}</h3>
+<h3> Verbs: </h3>
+{% for key,value in verbs.items() %}
+    {{ key }} ,
+    {{ value }} |
+{% endfor %}
+</div>
+
+</body>
+</html>

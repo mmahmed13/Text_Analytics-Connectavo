@@ -24,6 +24,15 @@ def sentenceDifference():
     print (most_similar, "\n", least_similar)
     return render_template ("sentenceDifference.html", book=book[0], sentence=sentence, most=most_similar, least=least_similar)
 
+
+@app.route("/top10/<book>")
+def top10(book=None):
+    if book==None:
+        return "Enter book id"
+    sentenceCollection = db.sentenceCollection
+    doc = sentenceCollection.find_one({"_id": book[0]})
+    return render_template("top10.html", similiar=doc["similar"], dissimilar=doc["dissimilar"], book=book[0])
+
 @app.route("/words")
 @app.route("/words/")
 @app.route("/words/<book>")

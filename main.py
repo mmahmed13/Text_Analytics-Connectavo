@@ -4,6 +4,10 @@ import json
 import gensim
 import operator
 
+client = MongoClient('localhost', 27017)
+db = client.ConnectavoDB
+
+
 def getWordCount (book):
       
     words = dict()
@@ -51,8 +55,6 @@ def getPoS (book):
 
 def storeWordCount ():
 
-    client = MongoClient('localhost', 27017)
-    db = client.ConnectavoDB
     wordCollection = db.wordCollection
 
     if wordCollection.find_one({"_id":"1"}) == None:       #check if book 1's word count not available in db
@@ -87,8 +89,6 @@ def storeWordCount ():
 
 def storePoS ():
 
-    client = MongoClient('localhost', 27017)
-    db = client.ConnectavoDB
     posCollection = db.posCollection
 
     if posCollection.find_one({"_id":"1"}) == None:         #check if book 1's pos count not available in db
@@ -129,7 +129,7 @@ def storePoS ():
         print("PoS Count of book 3 already available")
 
 
-def sentenceDifference(book, sentence):
+def sentenceDifference(book, sentence):         # for most similar & dissimilar sentence
     file = open('Ebooks/' + book + '.txt', 'r', encoding="ISO-8859-1")
     lines = file.read()
     sentences = nltk.sent_tokenize(lines)  # get a list of sentences
@@ -149,7 +149,7 @@ def sentenceDifference(book, sentence):
 
     tf_idf = gensim.models.TfidfModel(corpus)       #returns a model with # of sentences and # of tokens
 
-    sims = gensim.similarities.Similarity('Ebooks/',tf_idf[corpus], num_features=len(dictionary))
+    sims = gensim.similarities.Similarity('Ebooks/', tf_idf[corpus], num_features=len(dictionary))
 
     query_doc = [''.join(filter(str.isalpha, w.lower())) for w in nltk.word_tokenize(sentence)]     #converting given sentence to a tf_idf
     query_doc_bow = dictionary.doc2bow(query_doc)
@@ -160,4 +160,72 @@ def sentenceDifference(book, sentence):
 
     return sentences[similar_index], sentences[dissimilar_index]
 
+
+def allSenteceDifferences(book):        # for top 10 most unique sentences
+    wordCollection = db.wordCollection
+
+    file = open('Ebooks/' + book, 'r', encoding="ISO-8859-1")
+    lines = file.read()
+    sentences = nltk.sent_tokenize(lines)  # get a list of sentences
+
+    gen_docs = [[''.join(filter(str.isalpha, w.lower())) for w in nltk.word_tokenize(text)]
+                for text in sentences]  # a list of list containing words in each sentence
+
+    dictionary = gensim.corpora.Dictionary(gen_docs)  # converts list of list to corpora dictionary
+
+    """A corpus is a list of bags of words. A bag-of-words representation for a document just lists the number of times 
+    each word occurs in the document."""
+
+    corpus = [dictionary.doc2bow(gen_doc) for gen_doc in gen_docs]
+
+    """tf-idf = Term Frequency - Inverse Document Frequency. Term frequency is how often the word shows up 
+    in the document and inverse document fequency scales the value by how rare the word is in the corpus."""
+
+    tf_idf = gensim.models.TfidfModel(corpus)  # returns a model with # of sentences and # of tokens
+
+    sims = gensim.similarities.Similarity('Ebooks/', tf_idf[corpus], num_features=len(dictionary))
+
+    top10 = dict();
+    for sentence in sentences:
+        query_doc = [''.join(filter(str.isalpha, (w.lower()))) for w in
+                     nltk.word_tokenize(sentence)]       # a list of list containing words in each sentence
+        if len(query_doc)>2:
+            query_doc_bow = dictionary.doc2bow(query_doc)
+            query_doc_tf_idf = tf_idf[query_doc_bow]
+            score = sum(sims[query_doc_tf_idf])
+            if score != 0:
+                top10[sentence] = sum(sims[query_doc_tf_idf])
+
+    top10 = sorted(top10.items(), key=operator.itemgetter(1))
+    topSimilar = top10[-10:]
+    topDissimilar = top10[:10]
+
+    return topSimilar, topDissimilar
+
+
+def storeAllSenteceDifferences():
+    sentenceCollection = db.sentenceCollection
+
+    if sentenceCollection.find_one({"_id": "1"}) == None:
+        print ("Storing sentence difference of book 1")
+        similar, dissimilar = allSenteceDifferences("1-Ulysses.txt")
+        sentenceCollection.insert({
+            "_id": "1", "similar": similar, "dissimilar": dissimilar})
+
+    if sentenceCollection.find_one({"_id": "2"}) == None:
+        print ("Storing sentence difference of book 2")
+        similar, dissimilar = allSenteceDifferences("2-Leonardo.txt")
+        sentenceCollection.insert({
+            "_id": "2", "similar": similar, "dissimilar": dissimilar})
+
+    if sentenceCollection.find_one({"_id": "3"}) == None:
+        print ("Storing sentence difference of book 3")
+        similar, dissimilar = allSenteceDifferences("3-Science.txt")
+        sentenceCollection.insert({
+            "_id": "3", "similar": similar, "dissimilar": dissimilar})
+
+    print("Sentence difference stored")
+
+
+storeAllSenteceDifferences()
 
