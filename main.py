@@ -1,6 +1,8 @@
 import nltk
 from pymongo import MongoClient
 import json
+import gensim
+import operator
 
 def getWordCount (book):
       
@@ -17,6 +19,7 @@ def getWordCount (book):
                     else:
                         words[word] = 1
     return words
+
 
 def getPoS (book):
 
@@ -44,6 +47,7 @@ def getPoS (book):
             nounCount = sum(nouns.values())  # sums all noun values
             verbCount = sum(verbs.values())  # sums all verb values
     return nouns, verbs, nounCount, verbCount
+
 
 def storeWordCount ():
 
@@ -79,6 +83,7 @@ def storeWordCount ():
         print("Word Count data stored")
     else:
         print ("Word Count of book 3 already available")
+
 
 def storePoS ():
 
@@ -124,5 +129,40 @@ def storePoS ():
         print("PoS Count of book 3 already available")
 
 
-storeWordCount()
-storePoS()
+def sentenceDifference(book, sentence):
+    file = open('Ebooks/' + book + '.txt', 'r', encoding="ISO-8859-1")
+    lines = file.read()
+    sentences = nltk.sent_tokenize(lines)  # get a list of sentences
+
+    gen_docs = [[''.join(filter(str.isalpha, w.lower())) for w in nltk.word_tokenize(text)]
+                for text in sentences]      #a list of list containing words in each sentence
+
+    dictionary = gensim.corpora.Dictionary(gen_docs)    #converts list of list to corpora dictionary
+
+    """A corpus is a list of bags of words. A bag-of-words representation for a document just lists the number of times 
+    each word occurs in the document."""
+
+    corpus = [dictionary.doc2bow(gen_doc) for gen_doc in gen_docs]
+
+    """tf-idf = Term Frequency - Inverse Document Frequency. Term frequency is how often the word shows up 
+    in the document and inverse document fequency scales the value by how rare the word is in the corpus."""
+
+    tf_idf = gensim.models.TfidfModel(corpus)       #returns a model with # of sentences and # of tokens
+
+    sims = gensim.similarities.Similarity('Ebooks/',tf_idf[corpus], num_features=len(dictionary))
+
+    query_doc = [''.join(filter(str.isalpha, w.lower())) for w in nltk.word_tokenize(sentence)]     #converting given sentence to a tf_idf
+    query_doc_bow = dictionary.doc2bow(query_doc)
+    query_doc_tf_idf = tf_idf[query_doc_bow]
+
+    similar_index, maxScore = max(enumerate(sims[query_doc_tf_idf]), key=operator.itemgetter(1))       #returns index & score of most similar sentence
+    dissimilar_index, minScore = min(enumerate(sims[query_doc_tf_idf]), key=operator.itemgetter(1))   #returns index & score of least similar sentence
+
+    return sentences[similar_index], sentences[dissimilar_index]
+
+
+input = "I was encouraged to give reception to the English serial issue"
+most, least = sentenceDifference('3-Science', input)
+
+print (most)
+print (least)
