@@ -34,7 +34,8 @@ You're going to need:
  5. Run virtual environment with `connect\Scripts\activate`
  6. Run api.py with `python api.py` — This will fire up a flask server on [http://127.0.0.1:5000/]
  
- * nltk may require some packages to be downloaded when imported. You can download it using `nltk.download(<package>)`
+ Note: nltk may require some packages to be downloaded when imported. You can download it using `nltk.download(<package>)` after `import nltk`
  
  [http://127.0.0.1:5000/]: http://127.0.0.1:5000/
  
+## API Calling
