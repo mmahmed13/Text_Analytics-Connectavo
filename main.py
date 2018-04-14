@@ -18,8 +18,8 @@ def getWordCount (book):
                 word = word.lower()         #convert to lower-case
                 word = ''.join(filter(str.isalpha, word))       #remove special characters & numbers
                 if word != "":          #ignore empty words
-                    if word in words:
-                        words[word] += 1
+                    if word in words:       # if already present in dictionary
+                        words[word] += 1        # increment count
                     else:
                         words[word] = 1
     return words
@@ -31,19 +31,19 @@ def getPoS (book):
     verbs = dict()
     file = open('Ebooks/' + book, 'r', encoding="ISO-8859-1")
     lines = file.read()
-    sentences = nltk.sent_tokenize(lines)       #get a list of sentences
+    sentences = nltk.sent_tokenize(lines)       # get a list of sentences
     for sentence in sentences:
-        words = nltk.word_tokenize(sentence)
+        words = nltk.word_tokenize(sentence)        # get a list of words
         for word, pos in nltk.pos_tag(words):
-            word = word.lower()
-            word = ''.join(filter(str.isalpha, word))   #remove special characters & numbers
-            if word != '':                #ignore empty words
-                if pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS':
+            word = word.lower()         # lower case
+            word = ''.join(filter(str.isalpha, word))   # remove special characters & numbers
+            if word != '':                # ignore empty words
+                if pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS':        # if noun
                     if word in nouns:
                         nouns[word] += 1
                     else:
                         nouns[word] = 1
-                elif pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN' or pos == 'VBP' or pos == 'VBZ':
+                elif pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN' or pos == 'VBP' or pos == 'VBZ':   # if verb
                     if word in verbs:
                         verbs[word] += 1
                     else:
@@ -62,7 +62,7 @@ def storeWordCount ():
         wordCount1 = getWordCount("1-Ulysses.txt")
         wordCollection.insert({
             "_id": "1",
-            "words": json.dumps(wordCount1)
+            "words": json.dumps(wordCount1)         # encodes into json
         })
     else:
         print ("Word Count of book 1 already available")
@@ -91,12 +91,12 @@ def storePoS ():
 
     posCollection = db.posCollection
 
-    if posCollection.find_one({"_id":"1"}) == None:         #check if book 1's pos count not available in db
+    if posCollection.find_one({"_id":"1"}) == None:         # check if book 1's pos count not available in db
         print ("Storing PoS count of book 1")
         nouns1, verbs1, nounCount1, verbCount1 = getPoS ("1-Ulysses.txt")
         posCollection.insert({
             "_id": "1",
-            "nouns": json.dumps(nouns1),
+            "nouns": json.dumps(nouns1),            # encodes into json
             "verbs": json.dumps(verbs1),
             "nounCount": json.dumps(nounCount1),
             "verbCount": json.dumps(verbCount1)
@@ -127,6 +127,48 @@ def storePoS ():
         })
     else:
         print("PoS Count of book 3 already available")
+
+
+def allSenteceDifferences(book):        # for top 10 most unique sentences
+    wordCollection = db.wordCollection
+
+    file = open('Ebooks/' + book, 'r', encoding="ISO-8859-1")
+    lines = file.read()
+    sentences = nltk.sent_tokenize(lines)  # get a list of sentences
+
+    gen_docs = [[''.join(filter(str.isalpha, w.lower())) for w in nltk.word_tokenize(text)]
+                for text in sentences]  # a list of list containing words in each sentence
+
+    dictionary = gensim.corpora.Dictionary(gen_docs)  # converts list of list to corpora dictionary
+
+    """A corpus is a list of bags of words. A bag-of-words representation for a document just lists the number of times 
+    each word occurs in the document."""
+
+    corpus = [dictionary.doc2bow(gen_doc) for gen_doc in gen_docs]      # converts each word into
+
+    """tf-idf = Term Frequency - Inverse Document Frequency. Term frequency is how often the word shows up 
+    in the document and inverse document fequency scales the value by how rare the word is in the corpus."""
+
+    tf_idf = gensim.models.TfidfModel(corpus)  # returns a model with # of sentences and # of tokens
+
+    sims = gensim.similarities.Similarity('Ebooks/', tf_idf[corpus], num_features=len(dictionary))     # creates a similarity object in 'Ebooks/'
+
+    top10 = dict();
+    for sentence in sentences:
+        query_doc = [''.join(filter(str.isalpha, (w.lower()))) for w in
+                     nltk.word_tokenize(sentence)]       # a list of list containing words in each sentence
+        if len(query_doc)>4:        # consider only those sentences with length > 4 (including '.')
+            query_doc_bow = dictionary.doc2bow(query_doc)
+            query_doc_tf_idf = tf_idf[query_doc_bow]
+            score = sum(sims[query_doc_tf_idf])         # sum up similarity score of a sentence with every other sentence
+            if score != 0:      # ignore sentences with 0 score
+                top10[sentence] = score
+
+    top10 = sorted(top10.items(), key=operator.itemgetter(1))       # sort sentences acc to score
+    topSimilar = top10[-10:]        # returns last 10 sentences from list
+    topDissimilar = top10[:10]      # returns first 10 sentences from list
+
+    return topSimilar, topDissimilar
 
 
 def sentenceDifference(book, sentence):         # for most similar & dissimilar sentence
@@ -161,52 +203,10 @@ def sentenceDifference(book, sentence):         # for most similar & dissimilar 
     return sentences[similar_index], sentences[dissimilar_index]
 
 
-def allSenteceDifferences(book):        # for top 10 most unique sentences
-    wordCollection = db.wordCollection
-
-    file = open('Ebooks/' + book, 'r', encoding="ISO-8859-1")
-    lines = file.read()
-    sentences = nltk.sent_tokenize(lines)  # get a list of sentences
-
-    gen_docs = [[''.join(filter(str.isalpha, w.lower())) for w in nltk.word_tokenize(text)]
-                for text in sentences]  # a list of list containing words in each sentence
-
-    dictionary = gensim.corpora.Dictionary(gen_docs)  # converts list of list to corpora dictionary
-
-    """A corpus is a list of bags of words. A bag-of-words representation for a document just lists the number of times 
-    each word occurs in the document."""
-
-    corpus = [dictionary.doc2bow(gen_doc) for gen_doc in gen_docs]
-
-    """tf-idf = Term Frequency - Inverse Document Frequency. Term frequency is how often the word shows up 
-    in the document and inverse document fequency scales the value by how rare the word is in the corpus."""
-
-    tf_idf = gensim.models.TfidfModel(corpus)  # returns a model with # of sentences and # of tokens
-
-    sims = gensim.similarities.Similarity('Ebooks/', tf_idf[corpus], num_features=len(dictionary))
-
-    top10 = dict();
-    for sentence in sentences:
-        query_doc = [''.join(filter(str.isalpha, (w.lower()))) for w in
-                     nltk.word_tokenize(sentence)]       # a list of list containing words in each sentence
-        if len(query_doc)>3:
-            query_doc_bow = dictionary.doc2bow(query_doc)
-            query_doc_tf_idf = tf_idf[query_doc_bow]
-            score = sum(sims[query_doc_tf_idf])
-            if score != 0:
-                top10[sentence] = sum(sims[query_doc_tf_idf])
-
-    top10 = sorted(top10.items(), key=operator.itemgetter(1))
-    topSimilar = top10[-10:]
-    topDissimilar = top10[:10]
-
-    return topSimilar, topDissimilar
-
-
 def storeAllSenteceDifferences():
     sentenceCollection = db.sentenceCollection
 
-    if sentenceCollection.find_one({"_id": "1"}) == None:
+    if sentenceCollection.find_one({"_id": "1"}) == None:       # check if book 1's sentence collection not available in db
         print ("Storing sentence difference of book 1")
         similar, dissimilar = allSenteceDifferences("1-Ulysses.txt")
         sentenceCollection.insert({
