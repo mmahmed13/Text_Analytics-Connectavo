@@ -39,3 +39,39 @@ You're going to need:
  [http://127.0.0.1:5000/]: http://127.0.0.1:5000/
  
 ## API Calling
+
+### Word Count
+
+`http://127.0.0.1:5000/words` shows word count collection and links to individual word counts
+
+![words](https://user-images.githubusercontent.com/25735076/38771176-b838989c-4037-11e8-8e9d-bfae1fa2f2f1.PNG)
+
+`http://127.0.0.1:5000/words/<id>` shows word count of book with id where id = 1-3
+ 
+`http://127.0.0.1:5000/words/all` shows word count of all books combined
+
+![wordsall](https://user-images.githubusercontent.com/25735076/38771219-9ad2ee50-4038-11e8-8e65-8a10c1b50da7.PNG)
+
+### Parts of Speech Count
+
+`http://127.0.0.1:5000/pos` shows noun & verb count collection and links to individual pos counts
+
+![pos](https://user-images.githubusercontent.com/25735076/38771256-523da4a4-4039-11e8-9e40-83acf5cee1d5.PNG)
+
+`http://127.0.0.1:5000/words/<id>` shows noun and verb count of book with id where id = 1-3
+ 
+`http://127.0.0.1:5000/words/all` shows noun and verb count of all books combined
+
+![posall](https://user-images.githubusercontent.com/25735076/38771272-a30eee38-4039-11e8-927b-48a6cbef87ec.PNG)
+
+### Sentence Difference
+
+`http://127.0.0.1:5000/top10/<id>` shows top 10 most similar and dissimilar sentences in book id where id = 1-3
+
+![similar](https://user-images.githubusercontent.com/25735076/38771317-8a95b9f8-403a-11e8-9948-304efc211df4.PNG)
+
+Alternatively, you can also choose book from the home page for this task.
+At home page: enter a sentence in text box and choose book, and it will show you most similar and dissimlar sentence in that book
+
+![similar1](https://user-images.githubusercontent.com/25735076/38771378-9fbc4288-403b-11e8-89b0-c2c0a1b596f5.PNG)
+
