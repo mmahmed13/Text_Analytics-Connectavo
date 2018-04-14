@@ -3,21 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Connectavo</title>
+    <h1 style="text-align: center">Connectavo - Document Analysis</h1>
+
 </head>
 <body>
-<h1> hello connectavo</h1>
+<br><br>
+<div style="float:left; width:50%;">
+   <h2> <a href="/words/" style=" margin-left:20px;">Words Stats</a> </h2>
+</div>
+<div style="float:right; width:50%; ">
+   <h2> <a href="/pos/" style="">PoS Stats</a> </h2>
+</div>
 
-<form action="{{url_for('sentenceDifference')}}" >
-  Enter a Sentence:
-    <input type="text" name="sentence" required > <br>
-    Choose a Book:
-  <select name="book">
-      <option value="1-Ulysses">Book 1</option>
-      <option value="2-Leonardo">Book 2</option>
-      <option value="3-Science">Book 3</option>
-  </select> <br>
-  <input type="submit" value="Submit">
-</form>
+<br><br><br><br><br>
+<div style="float:left;  width:50%;">
+   <h2 style="margin-left:20px;"> Top 10 Similar & Dissimilar Sentences: </h2>
+    <ul>
+        <li> <a href="/top10/1"> Book 1</a>  : Ulysses, by James Joyce</li>
+        <li> <a href="/top10/2"> Book 2</a>  : The Notebooks of Leonardo Da Vinci by Leonardo Da Vinci</li>
+        <li> <a href="/top10/3"> Book 3</a>  : The Outline of Science, by J. Arthur Thomson</li><br>
 
+    </ul>
+
+</div>
+
+<div style="float:right;  width:50%; ">
+    <h2> Sentence Difference</h2>
+    <form action="{{url_for('sentenceDifference')}}" >
+      Enter a Sentence:
+        <input type="text" name="sentence" required > <br>
+        Choose a Book:
+      <select name="book">
+          <option value="1-Ulysses">Book 1</option>
+          <option value="2-Leonardo">Book 2</option>
+          <option value="3-Science">Book 3</option>
+      </select> <br>
+      <input type="submit" value="Submit">
+        <p><font size="2" color="blue">This may take a while</font></p>
+    </form>
+</div>
 </body>
 </html>

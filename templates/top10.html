@@ -10,26 +10,24 @@
 </head>
 <body>
 
-<div style="float:left; width:48%; margin-right:10px;">
-<h2> 10 Most Similar Sentences: </h2>
-    {% for item in similar %}
-        <h3></h3>
-    {% endfor %}
+    <div style="float:left; width:48%; margin-right:10px;">
+    <h2> 10 Most Similar Sentences: </h2><br>
+        {% for item in similar %}
+            {{item[0]}} <br>
+             <h3> Score: </h3> {{item[1]}}   <br><br><br>
+        {% endfor %}
 
-    <h3> Nouns: </h3>
-{% for key,value in nouns.items() %}
-    {{ key }} ,
-    {{ value }} |
-{% endfor %}
-</div>
-<div style="float:left; width:50%;margin-left:10px;">
-<h3> Total Verbs: {{ verbCount }}</h3>
-<h3> Verbs: </h3>
-{% for key,value in verbs.items() %}
-    {{ key }} ,
-    {{ value }} |
-{% endfor %}
-</div>
+    </div>
+
+    <div style="float:left; width:48%; margin-right:10px;">
+    <h2> 10 Most Dissimilar Sentences: </h2><br>
+        {% for item in dissimilar %}
+            {{item[0]}} <br>
+             <h3> Score: </h3> {{item[1]}}   <br><br><br>
+
+        {% endfor %}
+
+    </div>
 
 </body>
 </html>

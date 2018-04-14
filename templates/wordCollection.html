@@ -5,18 +5,27 @@
     <title>Connectavo | Words</title>
 
 <div style="text-align: center">
-    <h1>Word Count Collection</h1>
+    <h1>Word Count Stats</h1>
 </div>
 
 </head>
 <body>
-{% for key,val in collection.items() %}
-  <h3> Book {{key}} </h3>
-{% for word,count in val.items() %}
-    {{ word }} ,
-    {{ count }} |
-{% endfor %}
 
-{% endfor %}
+<h2> Books: </h2>
+<ul>
+    <li> <a href="/words/1"> Book 1</a>  : Ulysses, by James Joyce</li>
+    <li> <a href="/words/2"> Book 2</a>  : The Notebooks of Leonardo Da Vinci by Leonardo Da Vinci</li>
+    <li> <a href="/words/3"> Book 3</a>  : The Outline of Science, by J. Arthur Thomson</li><br>
+    <li> <a href="/words/all"> Combined Stats</a></li>
+</ul>
+<br>
+    {% for key,val in collection.items() %}
+      <h3> Book {{key}} </h3>
+    {% for word,count in val.items() %}
+        {{ word }} ,
+        {{ count }} |
+    {% endfor %}
+
+    {% endfor %}
 </body>
 </html>

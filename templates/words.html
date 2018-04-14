@@ -14,9 +14,10 @@
 
 </head>
 <body>
-{% for key,value in words.items() %}
-    {{ key }} ,
-    {{ value }} |
-{% endfor %}
+
+    {% for key,value in words.items() %}
+        {{ key }} ,
+        {{ value }} |
+    {% endfor %}
 </body>
 </html>

@@ -189,7 +189,7 @@ def allSenteceDifferences(book):        # for top 10 most unique sentences
     for sentence in sentences:
         query_doc = [''.join(filter(str.isalpha, (w.lower()))) for w in
                      nltk.word_tokenize(sentence)]       # a list of list containing words in each sentence
-        if len(query_doc)>2:
+        if len(query_doc)>3:
             query_doc_bow = dictionary.doc2bow(query_doc)
             query_doc_tf_idf = tf_idf[query_doc_bow]
             score = sum(sims[query_doc_tf_idf])
@@ -227,5 +227,7 @@ def storeAllSenteceDifferences():
     print("Sentence difference stored")
 
 
+storeWordCount()
+storePoS()
 storeAllSenteceDifferences()
 

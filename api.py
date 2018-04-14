@@ -31,7 +31,7 @@ def top10(book=None):
         return "Enter book id"
     sentenceCollection = db.sentenceCollection
     doc = sentenceCollection.find_one({"_id": book[0]})
-    return render_template("top10.html", similiar=doc["similar"], dissimilar=doc["dissimilar"], book=book[0])
+    return render_template("top10.html", similar=reversed(doc["similar"]), dissimilar=doc["dissimilar"], book=book[0])
 
 @app.route("/words")
 @app.route("/words/")
