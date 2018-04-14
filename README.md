@@ -6,6 +6,17 @@ It stores the data in PyMongo and delivers it over an API created in Flask.
 [NLTK]: https://www.nltk.org/
 [Gensim]: https://github.com/RaRe-Technologies/gensim
 
+
+Table of contents
+=================
+
+<!--ts-->
+   * [Getting Started](#getting-started)
+   * [API Calling](#api-calling)
+   * [Methodologies](#methodologies)
+<!--te-->
+
+
 ## Getting Started
 
 ### Prerequisites
@@ -99,7 +110,7 @@ I followed this [step-by-step tutorial] on gensim.
 
 Now, to find top 10 similar/unique sentences, a `tf-idf` is created for every sentence and it is sent to the similarity corpus of all other sentences. This returns an array of similarity fraction with the given sentence where, each fraction's location corresponds to the location of sentence in the sentence list. A sentence's score is computed by summing up all these fractions.
 
-Why not NLTK's WordNet for Sentence Difference?
-I tried using WordNet but in nltk, `path_similarity` sometimes returns None if there’s no path between 2 synsets and we'll have to filter out those values which does not give a good result. This issue has reported [here] in the comments section
+#### Why not NLTK's WordNet for Sentence Difference?
+I tried using WordNet but in nltk, `path_similarity` sometimes returns None if there’s no path between 2 synsets due to which we'll have to filter out those values. This does not give a good result. This issue has reported [here] in the comments section
 
 [here]: http://nlpforhackers.io/wordnet-sentence-similarity/
