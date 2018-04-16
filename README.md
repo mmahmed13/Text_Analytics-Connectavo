@@ -32,9 +32,9 @@ You're going to need:
  3. Run a mongo server with `mongod` in command line
  4. `cd Text_Analytics-Connectavo` 
  5. Run virtual environment with `connect\Scripts\activate`
- 6. Run api.py with `python api.py` — This will fire up a flask server on [http://127.0.0.1:5000/]
+ 6. Run api.py with `python api.py` — This will take a few minutes to store all the data in MongoDB and will then fire up a flask server on [http://127.0.0.1:5000/]
  
- Note: nltk may require some packages to be downloaded when imported. You can download it using `nltk.download(<package>)` after `import nltk`
+ ##### Note: nltk may require some packages to be downloaded when imported. You can download it using `nltk.download(<package>)` after `import nltk`
  
  [http://127.0.0.1:5000/]: http://127.0.0.1:5000/
  
@@ -100,6 +100,6 @@ I followed this [step-by-step tutorial] on gensim.
 Now, to find top 10 similar/unique sentences, a `tf-idf` is created for every sentence and it is sent to the similarity corpus of all other sentences. This returns an array of similarity fraction with the given sentence where, each fraction's location corresponds to the location of sentence in the sentence list. A sentence's score is computed by summing up all these fractions.
 
 #### Why not NLTK's WordNet for Sentence Difference?
-I tried using WordNet but in nltk, `path_similarity` sometimes returns None if there’s no path between 2 synsets due to which we'll have to filter out those values. This does not give a good result. This issue has reported [here] in the comments section
+I tried using WordNet but in nltk, `path_similarity` sometimes returns None if there’s no path between 2 synsets. To handle this, we'll have to filter out those None values, but this does not give a good result. This issue has reported [here] in the comments section
 
 [here]: http://nlpforhackers.io/wordnet-sentence-similarity/
