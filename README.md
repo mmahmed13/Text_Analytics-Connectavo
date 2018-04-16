@@ -6,6 +6,12 @@ It stores the data in PyMongo and delivers it over an API created in Flask.
 [NLTK]: https://www.nltk.org/
 [Gensim]: https://github.com/RaRe-Technologies/gensim
 
+## Table of Contents
+
+ - **Getting Started**
+ - **API Calling**
+ - **Methodologies**
+ 
 ## Getting Started
 
 ### Prerequisites
